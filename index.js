@@ -13,7 +13,7 @@ let run = async () => {
 
   fs.appendFileSync(
     path.join(__dirname, "history.txt"),
-    leaderData + "\n\n" + "====" + "\n\n"
+    leaderData + "\n\n@@@@\n\n" + new Date().getTime() + "\n\n====\n\n"
   );
 
   console.log(leaderData);
@@ -39,3 +39,7 @@ function queue(timems) {
 }
 
 run();
+
+process.on("unhandledRejection", up => {
+  throw up;
+});
