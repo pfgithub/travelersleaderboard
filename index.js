@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const { parse } = require("node-html-parser");
 const fs = require("fs");
 const path = require("path");
+const cp = require("child_process");
 
 let run = async () => {
   console.log("Fetching!...");
@@ -20,6 +21,17 @@ let run = async () => {
   let delayTime = (+minutesLeft + 3) * 60 * 1000;
   console.log("Done!", minutesLeft, delayTime);
   queue(delayTime);
+  console.log("Publishing stats...");
+  cp.exec("./publishstats.sh", (err, stdout, stderr) => {
+    console.log();
+    console.log();
+    console.log("Stats published.");
+    console.log("Err:", err);
+    console.log("Stdout:", stdout);
+    console.log("Stderr:", stderr);
+    console.log();
+    console.log();
+  });
 };
 
 function queue(timems) {

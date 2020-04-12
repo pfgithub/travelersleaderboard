@@ -10,12 +10,11 @@ let vlist = [
       .map(q =>
         JSON.parse(q)
           .sort((a, b) => b.xp - a.xp)
-          .map(
-            r =>
-              `lv${r.level.toString().padEnd(3, " ")} - ${r.username.padEnd(
-                15,
-                " "
-              )} (${r.xp} xp)`
+          .map(r =>
+            `|   lv${r.level.toString().padEnd(3, " ")} - ${r.username.padEnd(
+              15,
+              " "
+            )} (${r.xp} xp)`.padEnd(" ", 40)
           )
           .join("  \n")
       )
