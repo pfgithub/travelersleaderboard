@@ -10,7 +10,6 @@ let run = async () => {
   const dom = parse(await fr.text());
   //console.log(dom.structure);
   let leaderData = dom.querySelector("#leaderJSON").attributes.value;
-  let minutesLeft = dom.querySelector("#minutesLeft").text;
 
   fs.appendFileSync(
     path.join(__dirname, "history.txt"),
@@ -18,8 +17,8 @@ let run = async () => {
   );
 
   console.log(leaderData);
-  let delayTime = (+minutesLeft + 3) * 60 * 1000;
-  console.log("Done!", minutesLeft, delayTime);
+  let delayTime = 10 * 60 * 1000;
+  console.log("Done!", delayTime);
   queue(delayTime);
   console.log("Publishing stats...");
   cp.exec("./publishstats.sh", (err, stdout, stderr) => {
