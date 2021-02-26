@@ -9,15 +9,31 @@ let run = async () => {
   let fr = await fetch("https://thetravelers.online/leaderboard");
   const dom = parse(await fr.text());
   //console.log(dom.structure);
-  let leaderData = dom.querySelector("#leaderJSON").attributes.value;
+
+  let leaderData = dom.querySelector("#lb_xp_JSON").attributes.value;
+  let stepsData = dom.querySelector("#lb_steps_JSON").attributes.value;
+  let locsData = dom.querySelector("#lb_locs_JSON").attributes.value;
+  let sexData = dom.querySelector("#lb_seconds_JSON").attributes.value;
+
+  const parsed = [...JSON.parse(leaderData), ...JSON.parse(stepsData),
+    ...JSON.parse(locsData), ...JSON.parse(sexData)];
+  const res_player_info = {};
+
+  for(let psdv of parsed) {
+    if(!res_player_info[psdv.username]) res_player_info[psdv.username] = {};
+    Object.assign(res_player_info[psdv.username], psdv);
+    delete res_player_info[psdv.username].rank;
+  }
+
+  const resdata = JSON.stringify(Object.values(res_player_info));
 
   fs.appendFileSync(
     path.join(__dirname, "history.txt"),
-    leaderData + "\n\n@@@@\n\n" + new Date().getTime() + "\n\n====\n\n"
+    resdata + "\n\n@@@@\n\n" + new Date().getTime() + "\n\n====\n\n"
   );
 
-  console.log(leaderData);
-  let delayTime = 10 * 60 * 1000;
+  console.log(resdata);
+  let delayTime = 2 * 60 * 1000;
   console.log("Done!", delayTime);
   queue(delayTime);
   console.log("Publishing stats...");
