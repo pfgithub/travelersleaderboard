@@ -214,7 +214,7 @@ async function App(mount) {
     fullscreenScale.appendChild(fsbtnText);
     rightContainer.appendChild(fullscreenScale);
     let includePfg = el("button");
-    let ipfgTxt = tn("bots √");
+    let ipfgTxt = tn("bots ✓");
     includePfg.appendChild(ipfgTxt);
     rightContainer.appendChild(includePfg);
 
@@ -298,9 +298,9 @@ async function App(mount) {
             }
         }
         if (includePfgChoice) {
-            ipfgTxt.nodeValue = "bots √";
+            ipfgTxt.nodeValue = "bots ✓";
         } else {
-            ipfgTxt.nodeValue = "bots ×";
+            ipfgTxt.nodeValue = "bots ✗";
         }
         if (fullscreenScaleChoice) {
             fsbtnText.nodeValue = "scale ≡";
