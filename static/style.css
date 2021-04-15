@@ -1,0 +1,194 @@
+body {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 500px) 1fr;
+}
+#content {
+    grid-column: 2;
+}
+pre {
+    text-align: center;
+}
+button {
+    background-color: #eee;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    transition: 0.1s border, 0.1s background-color, 0.1s color;
+}
+button:disabled {
+    background-color: #fff;
+    border-color: #eee;
+}
+html {
+    background-color: white;
+}
+.selectedlynk {
+    color: black;
+    text-decoration: none;
+}
+.playpause {
+    background-color: transparent;
+    border-radius: 0;
+    width: 25px;
+    height: 25px;
+    /* transition: none; */
+    border: 0;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    background-color: transparent;
+    border-radius: 0;
+    box-sizing: border-box;
+    border-color: transparent transparent transparent black;
+    background-repeat: repeat-y;
+}
+button.play {
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+}
+button.pause {
+    border-style: double;
+    border-width: 0 0 0 15px;
+}
+button.restart {
+    border-style: solid;
+    border-left-width: 0px;
+    border-top-width: 12px;
+    border-bottom-width: 12px;
+    border-right-width: 20px;
+    border-color: transparent black transparent black;
+    background-image: linear-gradient(
+        to right,
+        black 5px,
+        transparent 5px,
+        transparent 25px
+    );
+}
+
+.buttonbar {
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+}
+.left {
+    display: flex;
+    justify-content: flex-start;
+}
+.right {
+    display: flex;
+    justify-content: flex-end;
+}
+.sliderBar {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+}
+.sliderBar input {
+    -webkit-appearance: none;
+    appearence: none;
+    background-image: linear-gradient(
+        to bottom,
+        transparent 40%,
+        #aaa 40%,
+        #aaa 60%,
+        transparent 60%
+    );
+    height: 25px;
+    border-radius: 5px;
+}
+.sliderBar input:disabled {
+    background-color: transparent;
+    background-repeat: repeat-x;
+    background-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 10px,
+        #eee 10px,
+        #eee 15px,
+        transparent 15px,
+        transparent 25px
+    );
+}
+
+.sliderBar input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearence: none;
+    width: 15px;
+    height: 15px;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    border-radius: 1000px;
+}
+.sliderBar input:disabled::-webkit-slider-thumb {
+    background-color: #fff;
+    border-color: #eee;
+}
+
+.sliderBar input::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearence: none;
+    width: 15px;
+    height: 15px;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    border-radius: 1000px;
+}
+.sliderBar input:disabled::-moz-range-thumb {
+    background-color: #fff;
+    border-color: #eee;
+}
+
+:root {
+    font-family: sans-serif;
+}
+.playerlist {
+    position: relative;
+}
+.player {
+    position: absolute;
+    top: var(--top);
+    transition: 0.5s top, 0.5s opacity;
+    left: 0;
+    right: 0;
+    color: black;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    height: 1.18rem;
+    z-index: 3;
+}
+.playerbg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: white;
+}
+.playeranim {
+    width: var(--progress);
+    background-color: var(--color) !important;
+    transition: 0.1s width;
+}
+.player.scale {
+    box-shadow: none;
+    background: linear-gradient(
+        to right,
+        var(--color) var(--prev-progress),
+        var(--scale-color) var(--prev-progress),
+        var(--color) var(--progress),
+        white var(--progress),
+        var(--scale-color)
+    );
+    transition: 0.5s height;
+    z-index: 1;
+}
+.playertx {
+    position: absolute;
+}
+.player.scale.fullscreen {
+    height: 26.6rem;
+}
+.player.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
