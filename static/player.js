@@ -1,8 +1,7 @@
-let botsList = ["pfg", "lawnmower", "toragadude", "henta\x69", "LightningWB"];
+let botsList = ["pfg", "lawnmower", "toragadude", "henta\x69", "LightningWB", 'Meepcom', 'cerbere'];
 
 let el = n => document.createElement(n);
 let tn = txt => document.createTextNode(txt);
-
 function xmur3(str) {
     for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
         (h = Math.imul(h ^ str.charCodeAt(i), 3432918353)),
@@ -62,7 +61,14 @@ async function App(mount) {
     loader.appendChild(status);
     mount.appendChild(loader);
     let text;
-    let choicenames = { "#latest": "history6h.txt", "#last24h": "history2min.txt", "#alpha": "alpha.txt" };
+    let choicenames = {
+		"#latest": "history6h.txt",
+		'#dist': 'history6h.txt',
+		'#time': 'history6h.txt',
+		'#locs': 'history6h.txt',
+		"#last24h": "history2min.txt",
+		"#alpha": "alpha.txt"
+	};
     let selfyl = window.location.hash || "#latest";
     let filename = choicenames[selfyl];
     if (!filename) {
@@ -82,7 +88,7 @@ async function App(mount) {
     }
     status.nodeValue = "Loaded! Parsing...";
 
-    let vlist;
+    let vlist, targetStat;
     try {
         let history = text
             .split("\n====\n")
@@ -95,22 +101,55 @@ async function App(mount) {
             historyJson.add(lbd);
             return true;
         });
+		// uses the hash to determine what way to sort with
+		switch(window.location.hash)
+		{
+			case '#latest':
+				targetStat = 'xp';
+				break;
+			case '#time':
+				targetStat = 'seconds_played';
+				break;
+			case '#dist':
+				targetStat = 'steps_taken';
+				break;
+			case '#locs':
+				targetStat = 'locs_explored';
+				break;
+			default:
+				targetStat = 'xp';
+				break;
+		}
+		let sortingAlgorithm = (a, b)=> b[targetStat] - a[targetStat];
         vlist = history.map(([leaderboardData, time]) => {
             if (!time) time = 0;
             else time = +time.trim();
             leaderboardData = leaderboardData.trim();
-
-            let top10 = JSON.parse(leaderboardData).sort((a, b) => b.xp - a.xp);
+            let top10 = JSON.parse(leaderboardData).filter(e=>e[targetStat]!=undefined).sort(sortingAlgorithm);
+			if(top10[0]===undefined || top10[0][targetStat]===undefined)return null;
             return top10.map((player, i) => {
-                return {
+				if(targetStat==='xp') return {
                     username: player.username,
                     level: player.level || 0,
-                    xp: player.xp || 0,
+                    xp: player[targetStat] || 0,
+                    color: getRandomColor(player.username),
+                    time: time,
+                };
+				else if(targetStat==='seconds_played') return {
+                    username: player.username,
+                    xp: parseInt(player[targetStat]/60/60) || 0,
+                    color: getRandomColor(player.username),
+                    time: time,
+                };
+				else return {
+                    username: player.username,
+                    xp: player[targetStat] || 0,
                     color: getRandomColor(player.username),
                     time: time,
                 };
             });
         });
+		vlist = vlist.filter(e=>e!=null);
     } catch (e) {
         status.nodeValue = "Parse failed. " + e.toString();
         console.log(e);
@@ -133,6 +172,9 @@ async function App(mount) {
     let i = 0;
     for (let linkdat of [
         { name: "Release", hash: "#latest" },
+        { name: "Distance", hash: "#dist" },
+        { name: "Time", hash: "#time" },
+        { name: "Location", hash: "#locs" },
         { name: "24h", hash: "#last24h" },
         { name: "Alpha", hash: "#alpha" }
     ]) {
@@ -220,13 +262,13 @@ async function App(mount) {
         bg.appendChild(tx);
 
         if (scl) bg.classList.add("scale");
-        let level = tn("...");
+        let level = targetStat==='xp'?tn("..."):tn('');
         let xp = tn("...");
         let time = tn("time");
 
-        scl || tx.appendChild(tn("lv"));
+        scl || tx.appendChild(targetStat==='xp'?tn("lv"):tn(''));
         scl || tx.appendChild(level);
-        scl || tx.appendChild(tn(" - " + player + " ("));
+        scl || tx.appendChild(tn((targetStat==='xp'?" - ":'') + player + " ("));
         scl || tx.appendChild(xp);
         scl || tx.appendChild(tn(")"));
         scl && tx.appendChild(time);
@@ -293,7 +335,7 @@ async function App(mount) {
                 continue;
             let line = displayPlayers[player.username];
             line.bg.classList.remove("hidden");
-            line.level.nodeValue = (player.level + 1).toLocaleString();
+            if(targetStat==='xp')line.level.nodeValue = (player.level + 1).toLocaleString();
             line.xp.nodeValue = player.xp.toLocaleString();
             line.bg.style.setProperty("--top", 2.3 * index + "rem");
             let percent = player.xp / topXP;
